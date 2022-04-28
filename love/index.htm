@@ -1,0 +1,424 @@
+﻿<HTML>
+<HEAD>
+<TITLE>...::: Anh Yeu Em :::...</TITLE>
+<META http-equiv=content-type content=text/html;charset=UTF-8>
+
+<SCRIPT>
+		
+// Set the number of sparkles. Add or remove as many as you like.    
+var sparklenumber=20
+
+// Set the fonts that create the sparkles. Add or remove as many as you like.
+var sparklefont=new Array("Arial","Times","Comic Sans MS")
+
+// Set the sizes of sparkles (pixels). Add or remove as many as you like.
+var sparklesize=new Array(5,10,15,20)
+
+// Set colors of sparkles. Add or remove as many as you like.
+var sparklecolor=new Array("#FF0000","#000066","#444400","#006600")
+
+// Set the speed (higher=slower)
+var speed=20
+
+///////////////////////////////////////////////////////////////////////////
+// CONFIGURATION ENDS HERE
+///////////////////////////////////////////////////////////////////////////
+
+// Do not edit below this line
+var sparklesizeNS4=new Array()
+var x_sparklepos
+var y_sparklepos
+var x,y
+var x_random=new Array()
+var y_random=new Array()
+var max_explsteps=80
+var i_explsteps=0
+var i_color=0
+var i_size=0
+var i_font=0
+var marginbottom
+var marginright
+var sparklewidth=20
+var sparkleheight=20
+var isloaded=false
+
+var browserinfos=navigator.userAgent 
+var ie4=document.all&&!document.getElementById&&!browserinfos.match(/Opera/)
+var ie5=document.all&&document.getElementById&&!browserinfos.match(/Opera/)
+var ns4=document.layers
+var ns6=!document.all&&document.getElementById&&!browserinfos.match(/Opera/)
+var opera=browserinfos.match(/Opera/)  
+var browserok=ie4||ie5||ns4||ns6||opera
+
+for (i=0;i<=sparklesize.length;i++) {
+	sparklesizeNS4[i]=Math.round(sparklesize[i]/5)
+	if (sparklesizeNS4[i]<1) {sparklesizeNS4[i]=1}
+	if (sparklesizeNS4[i]>7) {sparklesizeNS4[i]=7}
+}
+
+function initlinkexploder() {
+	isloaded=true
+}
+
+function startexplosion(whatword) {
+if (isloaded) {
+    i_explsteps=0
+    x_sparklepos=x
+    y_sparklepos=y
+    for (i=0;i<=sparklenumber;i++) {
+		x_random[i]=Math.ceil(20*Math.random())-10
+        y_random[i]=Math.ceil(20*Math.random())-10
+		while(x_random[i]>-2 && x_random[i]<2) {
+        	x_random[i]=Math.ceil(20*Math.random())-10
+        	y_random[i]=Math.ceil(20*Math.random())-10
+		}
+	}
+	if (ie4) {
+		marginbottom = document.body.clientHeight
+		marginright = document.body.clientWidth
+        for (i=0;i<=sparklenumber;i++) {
+            var thisspan=eval("document.all.span"+i+".style")
+            thisspan.visibility="VISIBLE"
+			thisspan.posLeft=x_sparklepos
+			thisspan.posTop=y_sparklepos
+			var thisspan=eval("document.all.span"+i)
+			thisspan.innerHTML=whatword
+		}
+    }
+	if (ie5||opera) {
+		marginbottom=document.body.clientHeight
+		marginright=document.body.clientWidth
+        for (i=0;i<=sparklenumber;i++) {
+            var thisspan=document.getElementById("span"+i).style
+            thisspan.visibility="VISIBLE"
+			thisspan.left=x_sparklepos
+			thisspan.top=y_sparklepos
+			var thisspan=document.getElementById("span"+i)
+			thisspan.innerHTML=whatword
+			sparklewidth=parseInt(thisspan.offsetWidth)
+			sparkleheight=parseInt(thisspan.offsetHeight)
+			
+		}
+    }
+	if (ns6) {
+		marginbottom=window.innerHeight
+		marginright=window.innerWidth
+        for (i=0;i<=sparklenumber;i++) {
+            var thisspan=document.getElementById("span"+i).style
+            thisspan.visibility="VISIBLE"
+			thisspan.left=x_sparklepos
+			thisspan.top=y_sparklepos
+			var thisspan=document.getElementById("span"+i)
+			thisspan.innerHTML=whatword
+			sparklewidth=parseInt(thisspan.offsetWidth)
+			sparkleheight=parseInt(thisspan.offsetHeight)
+		}
+    }
+		
+    if (ns4) {
+		
+		marginbottom=window.innerHeight
+		marginright=window.innerWidth
+        for (i=0;i<=sparklenumber;i++) {
+			i_color++;i_font++;i_size++;
+	    	if (i_color>=sparklecolor.length) {i_color=0}
+			if (i_font>=sparklefont.length) {i_font=0}
+			if (i_size>=sparklesizeNS4.length) {i_size=0}
+            var thisspan=eval("document.span"+i)
+            thisspan.visibility="VISIBLE"
+            thisspan.left=x_sparklepos
+            thisspan.top=y_sparklepos
+			var thisspan=eval("document.span"+i+".document")
+			thisspan.write("<font face="+sparklefont[i_font]+" color="+sparklecolor[ 
+i_color]+" size="+sparklesizeNS4[i_size]+">")
+			document.write(whatword)
+			document.write("</font>")
+			thisspan.close()
+		}
+    }
+	explode()
+}
+}
+
+function explode() {
+	if (i_explsteps<=max_explsteps) {
+		for (i=0;i<=sparklenumber;i++) {
+			if (ie4) {
+            	var thisspan=eval("document.all.span"+i+".style")
+				if (thisspan.posLeft>=marginright || thisspan.posTop>= 
+marginbottom) {
+            		thisspan.posLeft=-1000
+					thisspan.posTop=-1000
+				}
+				else {
+					thisspan.visibility="VISIBLE"
+            		thisspan.posLeft+=x_random[i]
+            		thisspan.posTop+=y_random[i]
+				}
+			}
+			if (ie5||ns6||opera) {
+			 	var thisspan=document.getElementById("span"+i).style
+				if (parseInt(thisspan.left)>=marginright-sparklewidth-30+ 
+document.body.scrollLeft || parseInt(thisspan.top)>=marginbottom-sparkleheight-20+document.body. 
+scrollTop) {
+            		thisspan.left=-1000
+					thisspan.top=-1000			
+				}
+				else {
+					thisspan.visibility="VISIBLE"
+					thisspan.left=parseInt(thisspan.left)+x_random[i]
+					thisspan.top=parseInt(thisspan.top)+y_random[i]
+				}	
+			}
+			if (ns4) {
+				var thisspan=eval("document.span"+i)
+				thisspan.visibility="VISIBLE"
+				thisspan.left+=x_random[i]
+            	thisspan.top+=y_random[i]
+			}
+		}
+		i_explsteps++
+		var timer=setTimeout("explode()",speed)
+	}
+	else {
+		for (i=0;i<=sparklenumber;i++) {
+			if (ie4) {var thisspan=eval("document.all.span"+i+".style")}
+			if (ie5||ns6||opera) {var thisspan=document.getElementById("span"+i). 
+style}
+			if (ns4) {var thisspan=eval("document.span"+i)}
+	        thisspan.visibility="HIDDEN"
+		}
+		clearTimeout(timer)
+	}
+}
+
+function handlerMM(e){
+	x = (ns4||ns6) ? e.pageX : document.body.scrollLeft+event.clientX
+	y = (ns4||ns6) ? e.pageY : document.body.scrollTop+event.clientY
+}
+
+if (ns4){
+	document.captureEvents(Event.MOUSEMOVE);
+}
+document.onmousemove=handlerMM;
+
+document.write("<style>")
+document.write(".spanstyle {")
+document.write("position:absolute;")
+document.write("visibility:hidden;")
+document.write("}")
+document.write("</style>")
+
+for (i=0;i<=sparklenumber;i++) {
+	if (ie4||ie5||ns6||opera) {
+    	document.write("<div id='span"+i+"' class='spanstyle' style='font-family:"+sparklefont[ 
+i_font]+";font-size:"+sparklesize[i_size]+"px;color:"+sparklecolor[i_color]+";'>")
+    	document.write(".")
+    	document.write("</div>")
+    	i_color++;i_font++;i_size++;
+    	if (i_color>=sparklecolor.length) {i_color=0}
+		if (i_font>=sparklefont.length) {i_font=0}
+		if (i_size>=sparklesize.length) {i_size=0}
+	}
+	if (ns4) {
+    	document.write("<div id='span"+i+"' class='spanstyle'>")	
+		document.write("<font face="+sparklefont[i_font]+" color="+sparklecolor[i_color] 
++" size="+sparklesizeNS4[i_size]+">")
+    	document.write("....")
+		document.write("</font>")
+    	document.write("</div>")
+    	i_color++;i_font++;i_size++;
+    	if (i_color>=sparklecolor.length) {i_color=0}
+		if (i_font>=sparklefont.length) {i_font=0}
+		if (i_size>=sparklesizeNS4.length) {i_size=0}
+	}
+}
+if (browserok) {
+	window.onload=initlinkexploder
+}
+</SCRIPT>
+
+</HEAD>
+<BODY BGCOLOR=#FFFFFF LEFTMARGIN=0 TOPMARGIN=0 MARGINWIDTH=0 MARGINHEIGHT=0>
+<!-- ImageReady Slices (phuonghoaweb.psd) -->
+<TABLE WIDTH=735 BORDER=0 CELLPADDING=0 CELLSPACING=0 align="center">
+	<TR>
+		<TD COLSPAN=3>
+			<IMG SRC="index_01.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_01.gif" WIDTH=263 HEIGHT=24 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_02.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_02.gif" WIDTH=220 HEIGHT=24 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_03.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_03.gif" WIDTH=195 HEIGHT=24 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_04.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_04.gif" WIDTH=57 HEIGHT=24 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD height="92">
+			<IMG SRC="index_05.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_05.gif" WIDTH=31 HEIGHT=92 ALT=""></TD>
+		<TD COLSPAN=2 background="index_06.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_06.gif" width="415" height="92"><object width="113" height="81">
+          
+      <embed src="start.swf" tppabs="http://kehoachdautu.net/DEMO/love/start.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" wmode="transparent" menu="false" width="113" height="81"></embed></object></TD>
+		<TD COLSPAN=3 align="center" background="index_07.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_07.gif" width="415" height="92">&nbsp;			</TD>
+		<TD>
+			<IMG SRC="index_08.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_08.gif" WIDTH=26 HEIGHT=92 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_09.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_09.gif" WIDTH=31 HEIGHT=92 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_10.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_10.gif" WIDTH=31 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_11.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_11.gif" WIDTH=70 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_12.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_12.gif" WIDTH=162 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_13.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_13.gif" WIDTH=37 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_14.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_14.gif" WIDTH=183 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_15.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_15.gif" WIDTH=195 HEIGHT=31 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_16.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_16.gif" WIDTH=57 HEIGHT=31 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_17.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_17.gif" WIDTH=31 HEIGHT=21 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_18.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_18.gif" WIDTH=70 HEIGHT=21 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_19.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_19.gif" WIDTH=162 HEIGHT=21 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_20.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_20.gif" WIDTH=37 HEIGHT=21 ALT=""></TD>
+		<TD COLSPAN=2 ROWSPAN=7 align="center" valign="middle" background="index_21.jpg" tppabs="http://kehoachdautu.net/DEMO/love/images/index_21.jpg"><IFRAME name='thehuy' src="01.htm" tppabs="http://kehoachdautu.net/DEMO/love/01.htm" width='370' height='330' frameborder=0></IFRAME>&nbsp;			</TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_22.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_22.gif" WIDTH=57 HEIGHT=21 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_23.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_23.gif" WIDTH=31 HEIGHT=93 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_24.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_24.gif" WIDTH=70 HEIGHT=93 ALT=""></TD>
+		<TD valign="top" background="index_25.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_25.gif">&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="gui.htm" tppabs="http://kehoachdautu.net/DEMO/love/gui.htm">Gửi người tôi yêu</a>
+		<br>&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="tho.htm" tppabs="http://kehoachdautu.net/DEMO/love/tho.htm">Anh yêu em</a>
+		<br>&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="tinnhan.htm" tppabs="http://kehoachdautu.net/DEMO/love/tinnhan.htm">Tin nhắn tình yêu</a>
+		<br>&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="chuyentinh.html" tppabs="http://kehoachdautu.net/DEMO/love/chuyentinh.html">Một câu chuyện tình</a>
+					</TD>
+		<br>
+		
+		
+		<TD>
+			<IMG SRC="index_26.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_26.gif" WIDTH=37 HEIGHT=93 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_27.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_27.gif" WIDTH=26 HEIGHT=93 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_28.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_28.gif" WIDTH=31 HEIGHT=93 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_29.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_29.gif" WIDTH=31 HEIGHT=36 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_30.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_30.gif" WIDTH=70 HEIGHT=36 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_31.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_31.gif" WIDTH=162 HEIGHT=36 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_32.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_32.gif" WIDTH=37 HEIGHT=36 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_33.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_33.gif" WIDTH=57 HEIGHT=36 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_34.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_34.gif" WIDTH=31 HEIGHT=30 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_35.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_35.gif" WIDTH=70 HEIGHT=30 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_36.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_36.gif" WIDTH=162 HEIGHT=30 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_37.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_37.gif" WIDTH=37 HEIGHT=30 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_38.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_38.gif" WIDTH=57 HEIGHT=30 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_39.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_39.gif" WIDTH=31 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_40.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_40.gif" WIDTH=70 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_41.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_41.gif" WIDTH=162 HEIGHT=31 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_42.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_42.gif" WIDTH=37 HEIGHT=31 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_43.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_43.gif" WIDTH=57 HEIGHT=31 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_44.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_44.gif" WIDTH=31 HEIGHT=93 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_45.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_45.gif" WIDTH=70 HEIGHT=93 ALT=""></TD>
+		<TD valign="top" background="index_46.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_46.gif">&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="loi.htm" tppabs="http://kehoachdautu.net/DEMO/love/loi.htm">Lời của trái tim</a>
+		<br>&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="lydo.htm" tppabs="http://kehoachdautu.net/DEMO/love/lydo.htm">Lý do cho một tình yêu</a>			
+		<br>&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="mauty.htm" tppabs="http://kehoachdautu.net/DEMO/love/mauty.htm">Tình yêu có màu gì?</a>			
+		<br>&nbsp;
+		<a onClick="startexplosion('Anh yeu em')" style="TEXT-DECORATION: none" target="thehuy" href="all.htm" tppabs="http://kehoachdautu.net/DEMO/love/all.htm">My love</a>			
+					</TD>
+		<TD>
+			<IMG SRC="index_47.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_47.gif" WIDTH=37 HEIGHT=93 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_48.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_48.gif" WIDTH=26 HEIGHT=93 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_49.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_49.gif" WIDTH=31 HEIGHT=93 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="index_50.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_50.gif" WIDTH=31 HEIGHT=35 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_51.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_51.gif" WIDTH=70 HEIGHT=35 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_52.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_52.gif" WIDTH=162 HEIGHT=35 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_53.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_53.gif" WIDTH=37 HEIGHT=35 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_54.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_54.gif" WIDTH=57 HEIGHT=35 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>
+			<IMG SRC="index_55.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_55.gif" WIDTH=101 HEIGHT=22 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_56.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_56.gif" WIDTH=162 HEIGHT=22 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_57.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_57.gif" WIDTH=37 HEIGHT=22 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_58.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_58.gif" WIDTH=183 HEIGHT=22 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_59.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_59.gif" WIDTH=195 HEIGHT=22 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_60.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_60.gif" WIDTH=57 HEIGHT=22 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>
+			<IMG SRC="index_61.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_61.gif" WIDTH=101 HEIGHT=26 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_62.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_62.gif" WIDTH=162 HEIGHT=26 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_63.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_63.gif" WIDTH=220 HEIGHT=26 ALT=""></TD>
+		<TD>
+			<IMG SRC="index_64.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_64.gif" WIDTH=195 HEIGHT=26 ALT=""></TD>
+		<TD COLSPAN=2>
+			<IMG SRC="index_65.gif" tppabs="http://kehoachdautu.net/DEMO/love/images/index_65.gif" WIDTH=57 HEIGHT=26 ALT=""></TD>
+	</TR>
+</TABLE><center> <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%" background="title_bg.gif" tppabs="http://kehoachdautu.net/DEMO/love/title_bg.gif">
+  <TR>
+    <TD background="foot.jpg" tppabs="http://kehoachdautu.net/DEMO/love/images/foot.jpg" height=40 
+    width="100%">
+      <P align=center style="MARGIN-BOTTOM: 0px; MARGIN-TOP: 0px"><b>
+		<font face="Tahoma" size="2" color="#FF3399">Copyright 2010 by 
+		wWw.PhanNhat.Com</font></b></P></TD></TR></TABLE></center>
+<!-- End ImageReady Slices -->
+</BODY>
+</HTML>
